@@ -22,6 +22,12 @@ RUN apt-get update && apt-get install -y \
   x11vnc \
   supervisor \
   && rm -rf /var/lib/apt/lists/*
+ENV HOME=/root \
+    DEBIAN_FRONTEND=noninteractive \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    DISPLAY=:0.0 
 
 RUN wget http://coppeliarobotics.com/files/V-REP_PRO_EDU_V3_5_0_Linux.tar.gz
 RUN tar -xf V-REP_PRO_EDU_V3_5_0_Linux.tar.gz
