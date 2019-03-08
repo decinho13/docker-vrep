@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y \
   socat \
   x11vnc \
   supervisor \
+  fluxbox \
   && rm -rf /var/lib/apt/lists/*
 ENV HOME=/root \
     DEBIAN_FRONTEND=noninteractive \
