@@ -2,7 +2,7 @@
 set -ex
 
 RUN_FLUXBOX=${RUN_FLUXBOX:-yes}
-RUN_XTERM=${RUN_XTERM:-yes}
+RUN_XTERM=${RUN_XTERM:-no}
 
 case $RUN_FLUXBOX in
   false|no|n|0)
