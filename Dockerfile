@@ -16,11 +16,19 @@ RUN apt-get update && apt-get install -y \
   libdbus-1-3 \
   libfontconfig1 \
   xvfb \
+  net-tools \
+  novnc \
+  socat \
+  x11vnc \
+  supervisor \
   && rm -rf /var/lib/apt/lists/*
 
 RUN wget http://coppeliarobotics.com/files/V-REP_PRO_EDU_V3_5_0_Linux.tar.gz
 RUN tar -xf V-REP_PRO_EDU_V3_5_0_Linux.tar.gz
 RUN apt-get remove -y wget
-
+RUN mkdir /app
 RUN echo 'export QT_DEBUG_PLUGINS=1' >> ~/.bashrc
 RUN echo 'export PATH=/V-REP_PRO_EDU_V3_5_0_Linux/:$PATH' >> ~/.bashrc
+COPY . /app
+CMD ["sudo","bash","/app/entrypoint.sh"]
+EXPOSE 7000 5643
