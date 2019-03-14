@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
   libfontconfig1 \
   xvfb \
   net-tools \
-  novnc \
+  novnc xterm \
   socat \
   x11vnc \
   supervisor \
@@ -38,4 +38,4 @@ RUN echo 'export QT_DEBUG_PLUGINS=1' >> ~/.bashrc
 RUN echo 'export PATH=/V-REP_PRO_EDU_V3_5_0_Linux/:$PATH' >> ~/.bashrc
 COPY . /app
 CMD ["sudo","bash","/app/entrypoint.sh"]
-EXPOSE 7000 5643
+EXPOSE 9000 5643
