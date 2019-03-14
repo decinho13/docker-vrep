@@ -1,34 +1,30 @@
 FROM ubuntu:16.04
 
-LABEL mantainer="gvgramazio@gmail.com" \
-      version="0.1"
+RUN set -ex; \
+    apt-get update; \
+    apt-get install -y \
+      bash \
+      fluxbox \
+      git \
+      net-tools \
+      novnc \
+      socat \
+      supervisor \
+      x11vnc \
+      xterm \
+      xvfb
 
-RUN apt-get update && apt-get install -y \
-  wget \
-  libglib2.0-0  \
-  libgl1-mesa-glx \
-  xcb \
-  "^libxcb.*" \
-  libx11-xcb-dev \
-  libglu1-mesa-dev \
-  libxrender-dev \
-  libxi6 \
-  libdbus-1-3 \
-  libfontconfig1 \
-  xvfb \
-  net-tools \
-  novnc xterm \
-  socat \
-  x11vnc \
-  supervisor \
-  fluxbox \
-  && rm -rf /var/lib/apt/lists/*
+# Setup demo environment variables
 ENV HOME=/root \
     DEBIAN_FRONTEND=noninteractive \
     LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8 \
     LC_ALL=C.UTF-8 \
-    DISPLAY=:0.0 
+    DISPLAY=:0.0 \
+    DISPLAY_WIDTH=1024 \
+    DISPLAY_HEIGHT=768 \
+    RUN_XTERM=yes \
+    RUN_FLUXBOX=yes
 
 RUN wget http://coppeliarobotics.com/files/V-REP_PRO_EDU_V3_5_0_Linux.tar.gz
 RUN tar -xf V-REP_PRO_EDU_V3_5_0_Linux.tar.gz
