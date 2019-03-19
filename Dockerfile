@@ -49,5 +49,5 @@ RUN rm V-REP_PRO_EDU_V3_5_0_Linux.tar.gz
 RUN apt-get remove -y wget
 RUN mkdir /app
 COPY . /app
-CMD ["sudo","bash","/app/entrypoint.sh"]
+CMD ["sudo","sh","/app/entrypoint.sh"]
 EXPOSE 9000 5643
