@@ -36,7 +36,7 @@ RUN apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C3
 RUN apt-get update && apt-get install -y ros-kinetic-ros-base \
  	&& rm -rf /var/lib/apt/lists/*
 
-RUN pip install catkin_tools
+RUN pip3 install catkin_tools
 
 # Configure ROS
 RUN sudo rosdep init && sudo rosdep fix-permissions && rosdep update
