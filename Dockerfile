@@ -50,4 +50,5 @@ RUN apt-get remove -y wget
 RUN mkdir /app
 COPY . /app
 CMD ["sudo","sh","/app/entrypoint.sh"]
+CMD ["bash","/app/start.sh"]
 EXPOSE 9000 5643
