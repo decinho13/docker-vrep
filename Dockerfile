@@ -61,10 +61,11 @@ RUN mkdir /app
 COPY . /app
 
 #Add permissions to jovyan
-RUN chown -R jovyan:0 /opt/ros  && chmod -R g=u  /opt/ros 
-RUN chown -R jovyan:0  /etc  && chmod -R g=u /etc 
-RUN chown -R jovyan:0  /home  && chmod -R g=u /home
+USER root
+RUN chown -R 1000:0 /opt/ros  && chmod -R g=u  /opt/ros 
+RUN chown -R 1000:0  /etc  && chmod -R g=u /etc 
+RUN chown -R 1000:0  /home  && chmod -R g=u /home
 
 CMD ["sudo","sh","/app/entrypoint.sh"]
-
+USER 1000
 EXPOSE 9000 5643
