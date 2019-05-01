@@ -47,25 +47,26 @@ RUN apt-get update && apt-get install -y ros-kinetic-ros-base python-pip\
 RUN pip install catkin_tools
 
 # Configure ROS
-RUN sudo rosdep init && sudo rosdep fix-permissions && rosdep update
-
-#Install V-REP
-
-RUN wget http://coppeliarobotics.com/files/V-REP_PRO_EDU_V3_5_0_Linux.tar.gz
-RUN tar -xf V-REP_PRO_EDU_V3_5_0_Linux.tar.gz
-RUN rm V-REP_PRO_EDU_V3_5_0_Linux.tar.gz
-RUN apt-get remove -y wget
-
-#Add NoVnc-functionality
-RUN mkdir /app
-COPY . /app
-
-#Add permissions to jovyan
+RUN rosdep init && rosdep fix-permissions && rosdep update
 USER root
-RUN chown -R 1000:0 /opt/ros  && chmod -R g=u  /opt/ros 
-RUN chown -R 1000:0  /etc  && chmod -R g=u /etc 
-RUN chown -R 1000:0  /home  && chmod -R g=u /home
+ENV APP_ROOT=/opt/app-root
+ENV PATH=${APP_ROOT}/bin:${PATH} HOME=${APP_ROOT}
+#Install V-REP
+COPY . ${APP_ROOT}/bin/
+RUN cd ${APP_ROOT}/bin/ &&\
+    wget http://coppeliarobotics.com/files/V-REP_PRO_EDU_V3_5_0_Linux.tar.gz &&\
+    tar -xf V-REP_PRO_EDU_V3_5_0_Linux.tar.gz &&\
+    rm V-REP_PRO_EDU_V3_5_0_Linux.tar.gz &&\
+    apt-get remove -y wget
 
-CMD ["sudo","sh","/app/entrypoint.sh"]
-USER 1000
+RUN chmod -R u+x ${APP_ROOT}/bin && \
+    chgrp -R 0 ${APP_ROOT} && \
+    chmod -R g=u ${APP_ROOT} /etc/passwd
+USER 10001
+WORKDIR ${APP_ROOT}
+
 EXPOSE 9000 5643
+ENTRYPOINT [ "uid_entrypoint" ]
+CMD ["bash","entrypoint.sh"]
+
+
