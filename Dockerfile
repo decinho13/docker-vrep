@@ -66,7 +66,8 @@ USER 10001
 WORKDIR ${APP_ROOT}
 
 EXPOSE 9000 5643
-ENTRYPOINT [ "uid_entrypoint" ]
+# uncomment for openshift version
+#ENTRYPOINT [ "uid_entrypoint" ]
 CMD ["bash","entrypoint.sh"]
 
 
