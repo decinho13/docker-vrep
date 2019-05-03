@@ -67,7 +67,7 @@ WORKDIR ${APP_ROOT}
 
 EXPOSE 9000 5643
 # uncomment for openshift version
-#ENTRYPOINT [ "uid_entrypoint" ]
-#CMD ["bash","entrypoint.sh"]
-CMD ["bash","${APP_ROOT}/binentrypoint.sh"]
+ENTRYPOINT [ "uid_entrypoint" ]
+CMD ["bash","entrypoint.sh"]
+#CMD ["bash","${APP_ROOT}/binentrypoint.sh"]
 
