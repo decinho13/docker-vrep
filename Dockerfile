@@ -58,7 +58,7 @@ RUN cd ${APP_ROOT}/bin/ &&\
     tar -xf V-REP_PRO_EDU_V3_5_0_Linux.tar.gz &&\
     rm V-REP_PRO_EDU_V3_5_0_Linux.tar.gz &&\
     apt-get remove -y wget
-
+RUN cd ${APP_ROOT}/bin/ && mkdir share && chown 10001:10001 ./share
 RUN chmod -R u+x ${APP_ROOT}/bin && \
     chgrp -R 0 ${APP_ROOT} && \
     chmod -R g=u ${APP_ROOT} /etc/passwd
