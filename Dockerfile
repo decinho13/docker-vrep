@@ -1,13 +1,7 @@
 FROM ubuntu:16.04
+ENV SHELL=/bin/bash
 
-ARG NB_USER="jovyan"
-ARG NB_UID="1000"
-ARG NB_GID="100"
-ENV SHELL=/bin/bash \
-    NB_USER=$NB_USER \
-    NB_UID=$NB_UID \
-    NB_GID=$NB_GID 
-    
+# Install dependencies for noVNC Server    
 RUN set -ex; \
     apt-get update; \
     apt-get install -y \
@@ -33,7 +27,8 @@ ENV HOME=/jovyan \
     DISPLAY_HEIGHT=768 \
     RUN_XTERM=yes \
     RUN_FLUXBOX=yes
-
+    
+# ---------------------------------------- ROS Install ------------------------------------------------------------
 #Install ROS dependencies
 RUN apt-get update && apt-get install -y \
 python-rosdep python-rosinstall gnupg2 curl ca-certificates\
@@ -49,8 +44,11 @@ RUN pip install catkin_tools
 # Configure ROS
 RUN rosdep init && rosdep fix-permissions && rosdep update
 USER root
+
+# ---------------------------------------- V-REP Install ------------------------------------------------------------
 ENV APP_ROOT=/opt/app-root
 ENV PATH=${APP_ROOT}/bin:${PATH} HOME=${APP_ROOT}
+
 #Install V-REP
 COPY . ${APP_ROOT}/bin/
 RUN cd ${APP_ROOT}/bin/ &&\
@@ -58,6 +56,8 @@ RUN cd ${APP_ROOT}/bin/ &&\
     tar -xf V-REP_PRO_EDU_V3_5_0_Linux.tar.gz &&\
     rm V-REP_PRO_EDU_V3_5_0_Linux.tar.gz &&\
     apt-get remove -y wget
+
+# --------------------------------- Change User permissions for Open-Shift --------------------------------------------
 RUN cd ${APP_ROOT}/bin/ && mkdir share
 RUN chmod -R u+x ${APP_ROOT}/bin && \
     chgrp -R 0 ${APP_ROOT} && \
@@ -66,8 +66,8 @@ USER 10001
 WORKDIR ${APP_ROOT}
 
 EXPOSE 9000 5643
-# uncomment for openshift version
+
 ENTRYPOINT [ "uid_entrypoint" ]
 CMD ["bash","entrypoint.sh"]
-#CMD ["bash","${APP_ROOT}/binentrypoint.sh"]
+
 
