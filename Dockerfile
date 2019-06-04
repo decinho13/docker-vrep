@@ -17,8 +17,7 @@ RUN set -ex; \
       xvfb
 
 # Setup demo environment variables
-ENV HOME=/jovyan \
-    DEBIAN_FRONTEND=noninteractive \
+ENV DEBIAN_FRONTEND=noninteractive \
     LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8 \
     LC_ALL=C.UTF-8 \
