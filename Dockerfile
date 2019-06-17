@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM nvidia/cuda:10.0-cudnn7-runtime-ubuntu16.04
 ENV SHELL=/bin/bash
 
 # Install dependencies for noVNC Server    
@@ -14,7 +14,8 @@ RUN set -ex; \
       supervisor \
       x11vnc \
       xterm \
-      xvfb
+      xvfb \
+      python-pip libtool pkg-config build-essential autoconf automake uuid-dev
 
 # Setup demo environment variables
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -26,7 +27,18 @@ ENV DEBIAN_FRONTEND=noninteractive \
     DISPLAY_HEIGHT=768 \
     RUN_XTERM=yes \
     RUN_FLUXBOX=yes
-    
+#-------------------------------- Install Zero-MQ ----------------------------------------------------
+RUN wget https://github.com/zeromq/libzmq/releases/download/v4.2.2/zeromq-4.2.2.tar.gz && \
+    tar xvzf zeromq-4.2.2.tar.gz && \
+    # Create make file
+    cd zeromq-4.2.2 && \
+    ./configure && \
+    # Build and install(root permission only)
+    make install && \
+    # Install zeromq driver on linux
+    ldconfig
+RUN pip install pyzmq
+
 # ---------------------------------------- ROS Install ------------------------------------------------------------
 #Install ROS dependencies
 RUN apt-get update && apt-get install -y \
@@ -48,13 +60,17 @@ USER root
 ENV APP_ROOT=/opt/app-root
 ENV PATH=${APP_ROOT}/bin:${PATH} HOME=${APP_ROOT}
 
-#Install V-REP
+# Install V-REP
 COPY . ${APP_ROOT}/bin/
 RUN cd ${APP_ROOT}/bin/ &&\
     wget http://coppeliarobotics.com/files/V-REP_PRO_EDU_V3_5_0_Linux.tar.gz &&\
     tar -xf V-REP_PRO_EDU_V3_5_0_Linux.tar.gz &&\
     rm V-REP_PRO_EDU_V3_5_0_Linux.tar.gz &&\
     apt-get remove -y wget
+# Install ROS-Bridge
+RUN cd ${APP_ROOT}/bin/ && mkdir ros_ws && cd ros_ws && mkdir src && cd src && \
+    git clone https://github.com/lagadic/vrep_ros_bridge.git
+RUN RUN /bin/bash -c '. /opt/ros/kinetic/setup.bash; cd  ~/bin/ros_ws; catkin_make; catkin_make --pkg vrep_ros_bridge --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo ;cd ~/bin/V-REP_PRO_EDU_V3_5_0_Linux;ln -s ~/bin/ros_ws/devel/lib/libv_repExtRosBridge.so'
 
 # --------------------------------- Change User permissions for Open-Shift --------------------------------------------
 RUN cd ${APP_ROOT}/bin/ && mkdir share
